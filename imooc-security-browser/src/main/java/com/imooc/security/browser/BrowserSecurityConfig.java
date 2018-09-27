@@ -40,7 +40,7 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginPage("/authentication/require")
                 .loginProcessingUrl("/authentication/form")
                 .successHandler(successHandler)
-                .failureHandler(failureHandler)
+                .failureHandler(failureHandler) 
                 .and()
                 .authorizeRequests()
                 .antMatchers("/authentication/require",
