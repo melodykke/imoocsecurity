@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-//因为类中有autowire 但此处并不需要@Component  spring看到本类实现了ConstraintValidator接口，直接会纳管本类
+//因类中有autowire 但此处并不需要@Component  spring看到本类实现了ConstraintValidator接口，直接会纳管本类
 public class MyConstraintValidator implements ConstraintValidator<MyConstraint, Object> {
     @Autowired
     private HelloService helloService;

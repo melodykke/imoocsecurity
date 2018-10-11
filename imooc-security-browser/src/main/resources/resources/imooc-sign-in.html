@@ -5,7 +5,7 @@
     <title>登录页面</title>
 </head>
 <body>
-<h2>自定义登录页面</h2>
+<h2>默认登录页</h2>
 <form action="/authentication/form" method="post">
     <table>
         <tr>
@@ -15,6 +15,13 @@
         <tr>
             <td>密码：</td>
             <td><input type="password" name="password"></td>
+        </tr>
+        <tr>
+            <td>图片验证码：</td>
+            <td>
+                <input type="text" name="imageCode" />
+                <img src="/code/image" />
+            </td>
         </tr>
         <tr>
             <td colspan="2"><button type="submit">登录</button></td>
