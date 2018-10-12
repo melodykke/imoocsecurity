@@ -1,7 +1,10 @@
 package com.imooc.security.browser;
 
 import com.imooc.security.browser.authentication.ImoocAuthenticationSuccessHandler;
+import com.imooc.security.core.authentication.mobile.SmsCodeAuthenticationFilter;
+import com.imooc.security.core.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
 import com.imooc.security.core.properties.SecurityProperties;
+import com.imooc.security.core.properties.validate.code.SmsCodeFilter;
 import com.imooc.security.core.properties.validate.code.ValidateCodeFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -39,6 +42,9 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsService myUserDetailsService;
 
+    @Autowired
+    private SmsCodeAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         //http.httpBasic()
@@ -53,7 +59,13 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
         validateCodeFilter.setSecurityProperties(securityProperties);
         validateCodeFilter.afterPropertiesSet();
 
+        SmsCodeFilter smsCodeFilter = new SmsCodeFilter();
+        smsCodeFilter.setAuthenticationFailureHandler(authenticationFailureHandler);
+        smsCodeFilter.setSecurityProperties(securityProperties);
+        smsCodeFilter.afterPropertiesSet();
+
         http.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(smsCodeFilter, UsernamePasswordAuthenticationFilter.class)
             .formLogin()
                 .loginPage("/authentication/require")
                 .loginProcessingUrl("/authentication/form")
@@ -69,11 +81,12 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/authentication/require",
                     securityProperties.getBrowser().getLoginPage(),
                     "/favicon.ico",
-                    "/code/image",
+                    "/code/*",
                     "/error").permitAll()
             .anyRequest()
             .authenticated()
             .and().csrf().disable()
+            .apply(smsCodeAuthenticationSecurityConfig)
         ;
     }
 
