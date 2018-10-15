@@ -22,28 +22,12 @@ import java.util.Map;
 public class ValidateCodeController {
 
     @Autowired
-    private Map<String, ValidateCodeProcessor> validateCodeProcessors;
+    private ValidateCodeProcessorHolder validateCodeProcessorHolder;
 
     @GetMapping("/code/{type}")
     public void createCode(HttpServletRequest request, HttpServletResponse response, @PathVariable String type)
             throws Exception {
-        validateCodeProcessors.get(type + "CodeProcessor").create(new ServletWebRequest(request, response));
+        validateCodeProcessorHolder.findValidateCodeProcessor(type).create(new ServletWebRequest(request, response));
     }
 
-/*
-    @GetMapping("/code/image")
-    public void createCode(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        ImageCode imageCode = (ImageCode) imageCodeGenerator.generate(new ServletWebRequest(request));
-        sessionStrategy.setAttribute(new ServletWebRequest(request), SESSION_KEY, imageCode);
-        ImageIO.write(imageCode.getImage(), "JPEG", response.getOutputStream());
-    }
-
-    @GetMapping("/code/sms")
-    public void createSmsCode(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletRequestBindingException {
-        ValidateCode smsCode = smsCodeGenerator.generate(new ServletWebRequest(request));
-        sessionStrategy.setAttribute(new ServletWebRequest(request), SESSION_KEY, smsCode);
-        String mobile = ServletRequestUtils.getStringParameter(request, "mobile");
-        smsCodeSender.send(mobile, smsCode.getCode());
-    }
-*/
 }
